@@ -1,4 +1,12 @@
 /*
+
+  Basic GUI blocking jpeg encoder ported to JavaScript and optimized by 
+  Andreas Ritter, www.bytestrom.eu, 11/2009.
+
+  Example usage is given at the bottom of this file.
+  
+  ---------
+
   Copyright (c) 2008, Adobe Systems Incorporated
   All rights reserved.
 
@@ -28,11 +36,6 @@
   LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
   NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
-/*
-JPEG encoder ported to JavaScript and optimized by Andreas Ritter, www.bytestrom.eu, 11/2009
-
-Basic GUI blocking jpeg encoder
 */
 
 function JPEGEncoder(quality) {
@@ -733,36 +736,19 @@ function JPEGEncoder(quality) {
 	
 };
 
-// helper function to get the imageData of an existing image on the current page.
-function getImageDataFromImage(idOrElement){
-	var theImg = (typeof(idOrElement)=='string')? document.getElementById(idOrElement):idOrElement;
-	var cvs = document.createElement('canvas');
-	cvs.width = theImg.width;
-	cvs.height = theImg.height;
-	var ctx = cvs.getContext("2d");
-	ctx.drawImage(theImg,0,0);
-	
-	return (ctx.getImageData(0, 0, cvs.width, cvs.height));
-}
-/*
-
-function init(qu){
+/* Example usage. Quality is an int in the range [0, 100]
+function example(quality){
+	// Pass in an existing image from the page
 	var theImg = document.getElementById('testimage');
+	// Use a canvas to extract the raw image data
 	var cvs = document.createElement('canvas');
 	cvs.width = theImg.width;
 	cvs.height = theImg.height;
-	
-	//document.body.appendChild(cvs);
-	
 	var ctx = cvs.getContext("2d");
-
 	ctx.drawImage(theImg,0,0);
-
 	var theImgData = (ctx.getImageData(0, 0, cvs.width, cvs.height));
-	
-
-	var jpegURI = encoder.encode(theImgData,qu);
-	
+	// Encode the image and get a URI back
+	var jpegURI = encoder.encode(theImgData, quality);
 	var img = document.createElement('img');
 	img.src = jpegURI;
 	document.body.appendChild(img);
