@@ -583,7 +583,7 @@ function JPEGEncoder(quality) {
 			}
 		}
 		
-		this.encode = function(image,quality) // image data object
+		this.encode = function(image,quality,toBase64) // image data object
 		{
 			var time_start = new Date().getTime();
 			
@@ -683,6 +683,13 @@ function JPEGEncoder(quality) {
 			}
 	
 			writeWord(0xFFD9); //EOI
+
+			if(!toBase64) {
+				var data = byteout.slice(0);
+				byteout = [];
+				console.log('Encoding time: '+ duration + 'ms');
+				return data;
+			}
 
 			var jpegDataUri = 'data:image/jpeg;base64,' + btoa(byteout.join(''));
 			
