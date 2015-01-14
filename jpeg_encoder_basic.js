@@ -687,6 +687,8 @@ function JPEGEncoder(quality) {
 			if(!toBase64) {
 				var data = byteout.slice(0);
 				byteout = [];
+				// benchmarking
+				var duration = new Date().getTime() - time_start;
 				console.log('Encoding time: '+ duration + 'ms');
 				return data;
 			}
