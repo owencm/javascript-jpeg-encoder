@@ -582,7 +582,7 @@ function JPEGEncoder(quality) {
             }
         }
 
-        this.encode = function(image,quality,toBase64) // image data object
+        this.encode = function(image,quality,toRaw) // image data object
         {
             var time_start = new Date().getTime();
 
@@ -679,12 +679,21 @@ function JPEGEncoder(quality) {
 
             writeWord(0xFFD9); //EOI
 
-            if(!toBase64) {
-                var data = byteout.slice(0);
+            if(toRaw) {
+                var len = byteout.length;
+                var data = new Uint8Array(len);
+
+                for (var i=0; i<len; i++ ) {
+                    data[i] = byteout[i].charCodeAt();
+                }
+
+                //cleanup
                 byteout = [];
+
                 // benchmarking
                 var duration = new Date().getTime() - time_start;
                 console.log('Encoding time: '+ duration + 'ms');
+
                 return data;
             }
 
@@ -695,7 +704,6 @@ function JPEGEncoder(quality) {
             // benchmarking
             var duration = new Date().getTime() - time_start;
             console.log('Encoding time: '+ duration + 'ms');
-            //
 
             return jpegDataUri
     }
@@ -751,10 +759,36 @@ function example(quality){
     var ctx = cvs.getContext("2d");
     ctx.drawImage(theImg,0,0);
     var theImgData = (ctx.getImageData(0, 0, cvs.width, cvs.height));
-    // Encode the image and get a URI back
+    // Encode the image and get a URI back, toRaw is false by default
     var jpegURI = encoder.encode(theImgData, quality);
     var img = document.createElement('img');
     img.src = jpegURI;
     document.body.appendChild(img);
 }
-*/
+
+Example usage for getting back raw data and transforming it to a blob.
+Raw data is useful when trying to send an image over XHR or Websocket,
+it uses around 30% less bytes then a Base64 encoded string. It can
+also be useful if you want to save the image to disk using a FileWriter.
+
+NOTE: The browser you are using must support Blobs
+function example(quality){
+    // Pass in an existing image from the page
+    var theImg = document.getElementById('testimage');
+    // Use a canvas to extract the raw image data
+    var cvs = document.createElement('canvas');
+    cvs.width = theImg.width;
+    cvs.height = theImg.height;
+    var ctx = cvs.getContext("2d");
+    ctx.drawImage(theImg,0,0);
+    var theImgData = (ctx.getImageData(0, 0, cvs.width, cvs.height));
+    // Encode the image and get a URI back, set toRaw to true
+    var rawData = encoder.encode(theImgData, quality, true);
+
+    blob = new Blob([rawData.buffer], {type: 'image/jpeg'});
+    var jpegURI = URL.createObjectURL(blob);
+
+    var img = document.createElement('img');
+    img.src = jpegURI;
+    document.body.appendChild(img);
+}*/
