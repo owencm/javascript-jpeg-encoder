@@ -46,10 +46,10 @@ function JPEGEncoder(quality) {
     var UVTable = new Array(64);
     var fdtbl_Y = new Array(64);
     var fdtbl_UV = new Array(64);
-    var YDC_HT;
-    var UVDC_HT;
-    var YAC_HT;
-    var UVAC_HT;
+    var YDC_HT; //height
+    var UVDC_HT;  //height
+    var YAC_HT; //height
+    var UVAC_HT;  //height
 
     var bitcode = new Array(65535);
     var category = new Array(65535);
